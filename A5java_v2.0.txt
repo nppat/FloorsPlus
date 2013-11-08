@@ -1,0 +1,161 @@
+package com.patsapps.floorsplus;
+
+import java.text.DecimalFormat;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	//calculate button method
+		public void calculateButtonClick (View view){
+			
+			//create instances
+			 RadioGroup floorRadioGroup = (RadioGroup)findViewById (R.id.floorRadioGroup);
+			 RadioGroup qualityRadioGroup = (RadioGroup)findViewById(R.id.qualityRadioGroup);
+			 RadioGroup warrantyRadioGroup = (RadioGroup)findViewById(R.id.warrantyRadioGroup);
+			 TextView totalTextView = (TextView)findViewById(R.id.totalTextView);
+			 EditText squareFootEditText = (EditText)findViewById(R.id.squareFeetEditText);
+			
+			//variables
+			double squareFeet = Double.parseDouble(squareFootEditText.getText().toString());
+			double tax = 0.06;
+			double floorType = 0;
+			double quality = 0;
+			double warranty = 0;
+			double subtotal = 0;
+			double total = 0;
+			double setup = 250.00;
+			//create DecimalFormat
+			DecimalFormat df = new DecimalFormat ("$##############0.00");
+			
+			//radioButton instances
+			RadioButton carpetRadioButton = (RadioButton)findViewById(R.id.carpetRadio);
+			RadioButton tileRadioButton = (RadioButton)findViewById(R.id.tileRadio);
+			RadioButton woodRadioButton = (RadioButton)findViewById(R.id.woodRadio);
+			RadioButton valueRadioButton = (RadioButton)findViewById(R.id.valueRadio);
+			RadioButton durabrandRadioButton = (RadioButton)findViewById(R.id.durabrandRadio);
+			RadioButton exquisiteRadioButton = (RadioButton)findViewById(R.id.exquisiteRadio);
+			RadioButton noWarrantyRadioButton = (RadioButton)findViewById(R.id.noRadio);
+			RadioButton fiveYearRadioButton = (RadioButton)findViewById(R.id.fiveYearRadio);
+			RadioButton maintenanceFreeRadioButton = (RadioButton)findViewById(R.id.maintenanceFreeRadio);
+			
+			//if .isChecked statements
+			
+			if (carpetRadioButton.isChecked()){
+						floorType = 2.50 * squareFeet;
+			}
+			
+			if (carpetRadioButton.isChecked() && valueRadioButton.isChecked()) {
+				floorType= 2.50 * squareFeet;
+				noWarrantyRadioButton.setSelected(true);
+				fiveYearRadioButton.setSelected(false);
+				maintenanceFreeRadioButton.setSelected(false);
+			}
+
+			if (tileRadioButton.isChecked()){
+				floorType = 3.50 * squareFeet;
+			}
+			
+			if (woodRadioButton.isChecked()){
+				floorType = 4.00 * squareFeet;
+			}
+			
+			if (valueRadioButton.isChecked()){
+				quality = 1.50 * squareFeet;
+
+			}
+			
+			if (durabrandRadioButton.isChecked()){
+				quality = 2.50 * squareFeet;
+			}
+			
+			if (exquisiteRadioButton.isChecked()){
+				quality = (4.50 * squareFeet) + 400.00;
+			}
+			
+			if (noWarrantyRadioButton.isChecked()){
+				warranty = 0.00;
+			}
+			
+			if (fiveYearRadioButton.isChecked()){
+				warranty = 1.00 * squareFeet;
+			}
+			
+			if (maintenanceFreeRadioButton.isChecked()){
+				warranty = 3.00 * squareFeet;
+				
+			}// end if is.Checked
+			
+			// total calculations
+				//throws an alert if no square footage is entered
+			if (squareFeet == 0){
+				//create an AlertDialog
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				//set the title bar
+				builder.setTitle(R.string.squareFeetMissingTitle);
+				//OK button
+				builder.setPositiveButton(R.string.OK, null);
+				//set a the message to display in the alert
+				builder.setMessage(R.string.squareFeetMissing);
+				
+				AlertDialog errorDialog = builder.create();
+				errorDialog.show();
+				
+				//if squareFeet is less than or equal to 1000 square feet, add in setup fee
+				}else if (squareFeet <= 1000){
+					
+					subtotal = (setup + floorType + quality + warranty);
+					
+					total = subtotal + (subtotal * tax);
+			
+				//if squareFeet is more than 1000, there is no setup fee and there is a 10% discount
+				}else{
+					subtotal = (floorType + quality + warranty) - ((floorType + quality + warranty)* 0.1);
+	
+					total = subtotal + (subtotal * tax);
+				
+			}// end calculate if statement
+			
+			//display total
+			String totalString = df.format(total);
+			totalTextView.setText(totalString);
+			
+		}//end calculateButtonClick
+		
+		//reset button method
+		public void resetButtonClick (View view){
+			
+			//create instances
+			 RadioGroup floorRadioGroup = (RadioGroup)findViewById (R.id.floorRadioGroup);
+			 RadioGroup qualityRadioGroup = (RadioGroup)findViewById(R.id.qualityRadioGroup);
+			 RadioGroup warrantyRadioGroup = (RadioGroup)findViewById(R.id.warrantyRadioGroup);
+			 TextView totalTextView = (TextView)findViewById(R.id.totalTextView);
+			 EditText squareFootEditText = (EditText)findViewById(R.id.squareFeetEditText);
+			
+			floorRadioGroup.clearCheck();
+			qualityRadioGroup.clearCheck();
+			warrantyRadioGroup.clearCheck();
+			totalTextView.setText("$0.00");
+			squareFootEditText.setText("");
+		}//end resetButtonClick
+	}
