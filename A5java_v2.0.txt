@@ -1,3 +1,4 @@
+//For educational use only.  Written by Pat.
 package com.patsapps.floorsplus;
 
 import java.text.DecimalFormat;
